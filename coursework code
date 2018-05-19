@@ -1,0 +1,111 @@
+// Курсовая работа Титова М. 8151-21.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h" 
+#include <iostream> 
+#include <fstream> 
+#include "string"
+using namespace std;
+void main()
+{
+	system("cls");
+	setlocale(0, "");
+	int size2, size1 = 0, n, q = 0;
+	string str, s = "`", dlina;
+	bool k = 1; char ch = ' ';
+	ifstream f("f1.txt");
+	if (f) { //проверка условия открыт файл или нет
+		cout << "Введите длину строки по умолчанию : ";
+		while (f.peek() != EOF)
+		{
+			getline(f, str);
+			if (size1 < str.length())
+			{
+				size1 = str.length();
+			}
+		}
+		while (k)
+		{
+			getline(cin, dlina);
+			size2 = dlina.length();
+			for (int i = 0; i<size2; i++)
+			{
+				ch = dlina[i]; // переменной ch по-символьно присваиваем символы строки dlina
+				if (ch >= '0'&ch <= '9') { k = 0; } //проверка, цифра это или нет, если да, то k=0
+				else
+				{
+					cout << "Вы ввели НЕ число. Введите снова" << "\n\n";
+					k = 1;
+					break;
+				}
+			}
+			if (k != 1)
+			{
+				n = atoi(dlina.c_str()); // функция atoi преобразует строку string в целое значение типа int
+				if (k != 1 && size1 > n)
+				{
+					cout << "Ошибка! В файле имеются строки длинне строки по умолчанию. Введите снова " << endl;	k = 1;
+				}
+			}
+			cout << endl;
+		}
+		f.close();
+		ifstream w("f1.txt");
+		ofstream t("text1.txt");
+		while (w.peek() != EOF)
+		{
+			getline(w, str);
+			size1 = str.length();
+			if (size1 == n) { t << "|" << str << "|" << endl; }
+			else
+			{
+				for (int i = 0; i < size1; i++)
+				{
+					if ((str[i] == ',') || (str[i] == ' ') || (str[i] == '?') || (str[i] == '!') || (str[i] == ';') || (str[i] == '.'))
+					{
+						q++;
+					}
+				}
+				if (q != 0)
+				{
+					while (size1 != n)
+					{
+						for (int i = 0; i < size1; i++)
+						{
+							if (size1 != n)
+							{
+								if ((str[i] == ',') || (str[i] == ' ') || (str[i] == '?') || (str[i] == '!') || (str[i] == ';') || (str[i] == '.'))
+								{
+									str.insert(i + 1, s); //insert функция вставки в строку strстроки s
+									size1 = str.length();
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					while (size1 != n)
+					{
+						str = str + s; size1 = str.length();
+					}
+				}
+				for (int i = 0; i < size1; i++)
+				{
+					if (str[i] == '`') { str[i] = ' '; }
+				} // символ s заменяется на «пробел»
+				q = 0;
+				t << "|" << str << "|" << endl;
+			}
+		};
+		w.close();
+		t.close();
+		cout << "* Программа успешно завершена! *" << endl << endl;
+		cout << "Результат смотрите в файле text1.txt в папке с проектом. Шрифт в итоговом файле должен быть моноширинным!" << endl << endl;
+	}
+	else
+	{
+		cout << "Файл не найден. Проверьте путь" << endl;
+	}
+	system("pause");
+}
